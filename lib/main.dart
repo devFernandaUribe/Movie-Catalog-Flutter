@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:movie_catalog_app/providers/genre_provider.dart';
 import 'package:movie_catalog_app/providers/movies_provider.dart';
-import 'package:movie_catalog_app/screens/home_screen.dart';
-import 'package:movie_catalog_app/screens/single_movie.dart';
 import 'package:provider/provider.dart';
+
+import 'screens/screens.dart';
 
 void main() {
   runApp(const AppState());
@@ -17,6 +18,10 @@ class AppState extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => MoviesProvider(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GenreProvider(),
           lazy: false,
         )
       ],
@@ -33,9 +38,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Peliculas Populares",
-      initialRoute: 'home',
+      initialRoute: 'splash',
       routes: {
-        'home': (_) => HomeScreen(),
+        'home': (_) => const HomeScreen(),
+        'splash': (_) => const SplashScreen(),
+        // 'singleMovie': (_) => SingleMovie(),
         // 'singleMovie': (_) => SingleMovie()
       },
     );

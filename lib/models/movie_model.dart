@@ -33,6 +33,14 @@ class MovieModel {
   double voteAverage;
   int voteCount;
 
+  getCoverImageRoute() {
+    if (posterPath != null) {
+      return "https://image.tmdb.org/t/p/w500$backdropPath";
+    } else {
+      return "https://www.caracteristicas.co/wp-content/uploads/2019/02/cine-5-e1585960007845.jpg";
+    }
+  }
+
   factory MovieModel.fromJson(String str) =>
       MovieModel.fromMap(json.decode(str));
 
