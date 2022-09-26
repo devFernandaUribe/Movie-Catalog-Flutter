@@ -16,4 +16,9 @@ class GenreModel {
         id: json["id"],
         name: json["name"],
       );
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "name": name,
+      };
 }

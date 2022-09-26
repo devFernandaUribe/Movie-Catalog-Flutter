@@ -1,67 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:movie_catalog_app/models/genre_model.dart';
+import 'package:movie_catalog_app/providers/genre_provider.dart';
 
-class ListGenres extends StatelessWidget {
-  final List<GenreModel> genres;
+import '../providers/db_provider.dart';
+
+class ListGenres extends StatefulWidget {
   final ValueChanged onValueChanged;
   final int selectedGenreId;
   const ListGenres(
-      {super.key,
-      required this.genres,
-      required this.onValueChanged,
-      required this.selectedGenreId});
+      {super.key, required this.onValueChanged, required this.selectedGenreId});
+
+  @override
+  State<StatefulWidget> createState() => _ListGenresState();
+}
+
+class _ListGenresState extends State<ListGenres> {
+  var isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    _loadFromApi();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      height: 88.5,
-      child: getAllView(genres, context),
-    );
-
-    // Padding(
-    //     padding: const EdgeInsets.all(0),
-    //     child: SizedBox(
-    //         // width: MediaQuery.of(context).size.width,
-    //         height: 50.0,
-    //         child: ListView.builder(
-    //             shrinkWrap: true,
-    //             scrollDirection: Axis.horizontal,
-    //             itemCount: genres.length,
-    //             itemBuilder: (BuildContext context, int index) {
-    //               return GestureDetector(
-    //                 onTap: () {
-    //                   onValueChanged(genres[index].id);
-    //                 },
-    //                 child: Container(
-    //                   alignment: Alignment.center,
-    //                   width: MediaQuery.of(context).size.width,
-    //                   height: 2,
-    //                   decoration: BoxDecoration(
-    //                     border: Border.all(),
-    //                     color: const Color.fromARGB(154, 224, 143, 129),
-    //                   ),
-    //                   child: Text(
-    //                     genres[index].name,
-    //                     style: TextStyle(
-    //                         color: Colors.black.withOpacity(0.7),
-    //                         fontSize: 15,
-    //                         fontWeight: FontWeight.bold),
-    //                   ),
-    //                 ),
-    //               );
-    //             })));
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Container(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            height: 88.5,
+            child: _buildGenresListView());
   }
 
-  Widget getAllView(List<GenreModel> genres, BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: genres.length,
-      itemBuilder: (context, int index) {
-        return Padding(
-          padding: const EdgeInsets.only(top: 0.0, left: 10),
-          child: SingleChildScrollView(child: containerItem(genres[index])),
-        );
+  _loadFromApi() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    var apiProvider = GenreProvider();
+    await apiProvider.getAllGenres();
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  _buildGenresListView() {
+    List<GenreModel> genres;
+    return FutureBuilder(
+      future: DBProvider.db.getAllGenres(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          genres = snapshot.data;
+
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: genres.length,
+            itemBuilder: (context, int index) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 0.0, left: 10),
+                child:
+                    SingleChildScrollView(child: containerItem(genres[index])),
+              );
+            },
+          );
+        }
       },
     );
   }
@@ -69,9 +79,9 @@ class ListGenres extends StatelessWidget {
   Widget containerItem(GenreModel item) {
     return GestureDetector(
       onTap: () {
-        onValueChanged(item);
+        widget.onValueChanged(item);
       },
-      child: selectedGenreId != item.id
+      child: widget.selectedGenreId != item.id
           ? Container(
               width: 110,
               height: 27,

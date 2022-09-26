@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           leading: Image.asset(
-            'assets/images/black_popcorn.png',
+            'assets/icon/black_popcorn.png',
             height: 10,
           ),
           backgroundColor: const Color.fromARGB(255, 172, 207, 212),
@@ -51,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   _selectedGenreId = itemSelected;
                 });
               },
-              genres: genreProvider.genres,
             ),
             Expanded(
               child: ListMovies(
