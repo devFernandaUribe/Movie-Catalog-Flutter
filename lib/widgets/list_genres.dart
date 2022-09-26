@@ -41,7 +41,6 @@ class _ListGenresState extends State<ListGenres> {
 
     var apiProvider = GenreProvider();
     await apiProvider.getAllGenres();
-    await Future.delayed(const Duration(seconds: 2));
 
     setState(() {
       isLoading = false;

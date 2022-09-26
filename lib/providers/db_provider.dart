@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:movie_catalog_app/models/genre_model.dart';
-import 'package:movie_catalog_app/models/movie_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
